@@ -227,7 +227,7 @@ def sign_up():
                
 
             cursor = connection.cursor()
-            cursor.execute(query, (username, password, access_type))
+            cursor.execute(query, (username, password))
             connection.commit()
             cursor.close()
 
