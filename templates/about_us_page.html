@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About Us - Residential Property Sales Trending Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <a href="{{ url_for('static', filename='logo.png') }}" id="logoLink">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" id="logo">
+        </a>
+        <h1>About Us</h1>
+        <nav>
+            <ul>
+                <li><a href="main_page">Back to Main</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="about-us-content">
+            <h2>Our Movtivation</h2>
+            <p>
+                The retail industry now heavily relies on data analytics to gain insights into consumer 
+                behaviour and preferences. This project focuses on analyzing the sales of house properties in a city 
+                in Australia to determine the key factors that influence the sales prices of these properties. The 
+                dataset contains several variables such as date sold, postcode, price, and bedrooms etc. by 
+                examining these variables and assessing their relationships with one another, we can uncover 
+                insights that provide valuable knowledge to real estate agents and property owners alike. 
+                Understanding the factors that influence property value can help property owners
+                determine the best time and trends followed to sell their property and make any necessary 
+                renovations that may increase its value. On the other hand, property buyers can see the insights to 
+                determine which areas align with their interests and requirements. It can also help real estate agents 
+                to provide more accurate and personalized pricing recommendations to their clients. Overall, this 
+                project will provide meaningful insights into the real estate market and help improve the 
+                profitability and efficiency of the industry through data analytics.
+            </p>
+            <h2>Contributors</h2>
+            <ul class="contributors-list">
+                <li>
+                    <h4>Simran Banga</h4>
+                    <p></p>
+                </li>
+                <li>
+                    <h4>Natalie Miner</h4>
+                    <p></p>
+                </li>
+                <li>
+                    <h4>Ishrat Sikder</h4>
+                    <p></p>
+                </li>
+            </ul>
+        </section>
+    </main>
+    
+    <script>
+        document.getElementById('logoLink').addEventListener('click', function (e) {
+            e.preventDefault();
+            window.location.href = 'main_page';
+        });
+    </script>
+    
+</body>
+</html>
