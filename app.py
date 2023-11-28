@@ -1,17 +1,19 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import pyodbc
+from dotenv import load_dotenv
+import os
 
-
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__, static_folder='static')
 
-
-# Replace these values with your MSSQL database credentials
-server = 'nmserver23.database.windows.net'
-database = 'COMP4150'
-username = 'nmserver23'
-password = 'Nm061747012!'
-driver = 'ODBC Driver 17 for SQL Server'
+# Retrieve database credentials from environment variables
+server = os.getenv('DB_SERVER')
+database = os.getenv('DB_DATABASE')
+username = os.getenv('DB_USERNAME')
+password = os.getenv('DB_PASSWORD')
+driver = os.getenv('DB_DRIVER')
 
 # Create a connection string
 connection_string = f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password};'
@@ -200,8 +202,6 @@ def about_us_page():
     return render_template('about_us_page.html')
 
 
-
-
 # Route for sign up page
 @app.route('/sign_up', methods=['GET', 'POST'])
 def sign_up():
@@ -210,10 +210,8 @@ def sign_up():
         password = request.form.get('password')
         print(f"Received form data - Username: {username}, Password: {password}")
     
-        # Set the default value for 'access_type' to 'users'
-        access_type = 'users'
         # Insert user data into the 'users' table
-        query = "INSERT INTO users (username, password_hash, access_type) VALUES (?, ?, ?)"
+        query = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
   
         try:
             connection = getattr(app, 'database_connection', None)
@@ -239,6 +237,47 @@ def sign_up():
             return render_template('sign_up.html', error=f"Error: {str(e)}"), 500
 
     return render_template('sign_up.html')
+
+
+# Route for admin page
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    if request.method == 'POST':
+        # Retrieve form data
+        datesold = request.form.get('datesold')
+        postcode = request.form.get('postcode')
+        price = request.form.get('price')
+        property_type = request.form.get('propertyType')
+        bedrooms = request.form.get('bedrooms')
+
+        # Insert the form data into the database
+        query = "INSERT INTO raw_sales (datesold, postcode, price, propertyType, bedrooms) VALUES (?, ?, ?, ?, ?)"
+        
+        try:
+            connection = getattr(app, 'database_connection', None)
+
+            if connection is None:
+                # Database connection error, return an error message
+                return render_template('admin.html', error='Error connecting to the database'), 401
+
+            if connection.closed:
+                # Database connection is closed, reopen it
+                connection = create_connection()
+                setattr(app, 'database_connection', connection)
+
+            cursor = connection.cursor()
+            cursor.execute(query, (datesold, postcode, price, property_type, bedrooms))
+            connection.commit()
+            cursor.close()
+            return "New Property submitted successfully"
+
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            return render_template('admin.html', error=f"Error: {str(e)}"), 500
+
+    return render_template('admin.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

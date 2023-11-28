@@ -2,8 +2,68 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Residential Property Sales Trending Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page - Residential Property Sales</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: "Lora", serif;
+            background: #12343b;
+            color: #fff;
+        }
+
+        main {
+            max-width: 600px;
+            margin: 150px auto 0;
+            padding: 20px;
+            background: #d3bea8;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        #signup {
+            text-align: center;
+        }
+
+        #signup h2 {
+            font-family: "Playfair Display", serif;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        
+        #submitForm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        #submitForm label,
+        #submitForm select,
+        #submitForm input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        #submitForm input[type="submit"] {
+            width: 100%;
+            margin: 10px 0;
+            background-color: #333;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        #loginLink {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -13,114 +73,85 @@
         <h1>Property Sales Trends</h1>
         <nav>
             <ul>
-                <li><a href="#search" onclick="scrollToSection('search')">Search</a></li>
-                <li><a href="#trending-properties" onclick="scrollToSection('trending-properties')">Trending Properties</a></li>
-                <li><a href="about_us_page">About Us</a></li>
-                <li style="display: none;" id="loginLink"><a href="login">Login</a></li>
-                <li style="display: none;" id="logoutLink"><a href="#" id="logoutBtn">Logout</a></li>
+                <li><a href="main_page" onclick="return redirectToMainPage()">Return to Main Page</a></li>
             </ul>
         </nav>
     </header>
-    <main>     
-        <section id="search">
-            <h2>Search for Properties</h2>
-            <form id="searchForm" class="search-form">
-                <select id="querySelector">
-                    <option value="query1">Oldest Property Sale</option>
-                    <option value="query2">Newest Property Sale</option>
-                    <option value="query3">Top 10 Sales by Date</option>
-                    <!-- Add more options as needed -->
-                </select>
-                <input type="submit" value="Search">
+    <main>
+        <div id="signup">
+            <h2>Add Record to Database (raw_sales)</h2>
+        </div>
+
+        <div id="submitForm">
+            <form action="submit.php" method="post">
+                <input type="date" id="datesold" name="datesold" placeholder="Date" required>
+                <input type="text" id="postcode" name="postcode" placeholder="PostCode" required>
+                <input type="number" id="price" name="price" placeholder="Price" required>
+                <div id="propertyTypeContainer">
+                    <select id="propertyType" name="propertyType" required>
+                        <option aria-placeholder="Type">Select Type</option>
+                        <option value="House">House</option>
+                        <option value="Apartment">Apartment</option>
+                        <option value="Condo">Condo</option>
+                        <option value="Unit">Condo</option>
+                    </select>
+                </div>
+                <input type="number" id="bedrooms" name="bedrooms" placeholder="Bedrooms" required>
+                <input type="submit" value="Submit">
             </form>
-            </section>
-        
-            <section id="search-results">
-                <div id="resultContainer"></div>
-            </section>
+        </div>
     </main>
 
     <script>
-
-        document.getElementById('logoLink').addEventListener('click', function (e) {
+        document.getElementById('submitForm').addEventListener('submit', function (e) {
             e.preventDefault();
-            window.location.href = 'main_page';
+    
+            // Get form data
+            var datesold = document.getElementById('datesold').value;
+            var postcode = document.getElementById('postcode').value;
+            var price = document.getElementById('price').value;
+            var propertyType = document.getElementById('propertyType').value;
+            var bedrooms = document.getElementById('bedrooms').value;
+
+            // Create a FormData object and append the form fields
+            var formData = new FormData();
+            formData.append('datesold', datesold);
+            formData.append('postcode', postcode);
+            formData.append('price', price);
+            formData.append('propertyType', propertyType);
+            formData.append('bedrooms', bedrooms);
+
+            // Call the function to submit the form data
+            submitAdminForm(formData);
         });
-
-        // Check if the user is logged in when the page loads
-        var loggedInUser = localStorage.getItem('loggedInUser');
-        if (loggedInUser) {
-            // If user is logged in, show the logout link and hide the login link
-            document.getElementById('loginLink').style.display = 'none';
-            document.getElementById('logoutLink').style.display = 'block';
-        } else {
-            // If user is not logged in, show the login link and hide the logout link
-            document.getElementById('loginLink').style.display = 'block';
-            document.getElementById('logoutLink').style.display = 'none';
-        }
-
-        document.getElementById('logoutBtn').addEventListener('click', function (e) {
-            e.preventDefault();
-            
-            // Clear the user information from localStorage
-            localStorage.removeItem('loggedInUser');
-            
-            // Redirect to the main page (refresh)
-            window.location.href = 'main_page';
-        });
-
-        document.getElementById('searchForm').addEventListener('submit', function (e) {
-        e.preventDefault();               
-        // Get the value from the dropdown
-        var selectedQuery = document.getElementById('querySelector').value;
-        // Perform the query based on the selected option
-        performQuery(selectedQuery);
-        });
-
-
-        function performQuery(query) {
-        fetch('/main_page', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                'querySelector': query,
-            }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            displaySearchResults(data.results);
-        })
-        .catch(error => console.error('Error performing query:', error));
-        }
-
-        function displaySearchResults(result) {
-            var resultContainer = document.getElementById('resultContainer');
-
-            if (result && result.length > 0) {
-                var resultList = '<ul>';
-                result.forEach(item => {
-                    if (typeof item === 'object') {
-                        resultList += '<li>';
-                        for (var key in item) {
-                            resultList += '<strong>' + key + ':</strong> ' + item[key] + ', ';
+    
+        function submitAdminForm(formData) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '{{ url_for("admin") }}', true);
+    
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // Check if the response is JSON
+                        if (xhr.getResponseHeader('Content-Type') === 'application/json') {
+                            var jsonResponse = JSON.parse(xhr.responseText);
+                            alert('Submission Successful');
+                            // Handle JSON response
+                        } else {
+                            // Handle non-JSON response
+                            alert('Submission Successful');
+                            window.location.href = '/admin'; // Redirect to admin page after successful submission
                         }
-                        resultList = resultList.slice(0, -2); // Remove the trailing comma and space
-                        resultList += '</li>';
                     } else {
-                        resultList += '<li>' + item + '</li>';
+                        // Handle error response from the server
+                        alert('Error: Unable to submit entry. Please try again.');
                     }
-                });
-                resultList += '</ul>';
-                resultContainer.innerHTML = resultList;
-            } else {
-                resultContainer.innerHTML = '<p>No results found</p>';
-            }
+                }
+            };
+    
+            xhr.send(formData); // Send the form data to the server
         }
-
-
-
     </script>
+
 </body>
 </html>
