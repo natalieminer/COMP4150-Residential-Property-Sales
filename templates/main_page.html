@@ -106,31 +106,36 @@
         .catch(error => console.error('Error performing query:', error));
         }
 
+        // New
         function displaySearchResults(result) {
             var resultContainer = document.getElementById('resultContainer');
 
             if (result && result.length > 0) {
-                var resultList = '<ul>';
+                var resultList = '<div class="property-listing">';
+
                 result.forEach(item => {
+                    resultList += '<div class="property-item">';
+                    
                     if (typeof item === 'object') {
-                        resultList += '<li>';
                         for (var key in item) {
-                            resultList += '<strong>' + key + ':</strong> ' + item[key] + ', ';
+                            resultList += '<div class="property-detail">';
+                            resultList += '<span class="property-key">' + key + ':</span> ';
+                            resultList += '<span class="property-value">' + item[key] + '</span>';
+                            resultList += '</div>';
                         }
-                        resultList = resultList.slice(0, -2); // Remove the trailing comma and space
-                        resultList += '</li>';
                     } else {
-                        resultList += '<li>' + item + '</li>';
+                        resultList += '<div class="property-detail">' + item + '</div>';
                     }
+
+                    resultList += '</div>'; // Close property-item div
                 });
-                resultList += '</ul>';
+
+                resultList += '</div>'; // Close property-listing div
                 resultContainer.innerHTML = resultList;
             } else {
                 resultContainer.innerHTML = '<p>No results found</p>';
             }
         }
-
-
 
     </script>
 </body>

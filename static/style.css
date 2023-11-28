@@ -192,6 +192,72 @@ input[type="text"], input[type="submit"] {
     margin: 10px 0;
 }
 
+/* New */
+.property-listing {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.property-item {
+    width: calc(33.33% - 20px); /* Can adjust */
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    background: #fff;
+    border: 1px solid #e1e1e1;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.property-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.property-detail {
+    padding: 10px;
+    border-bottom: 1px solid #e1e1e1;
+    display: flex;
+    justify-content: space-between;
+}
+
+.property-key {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.property-card {
+    width: 100%;
+    margin: 20px 0;
+    padding: 20px;
+    border: 2px solid #f7f7f7;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    background: #fff;
+}
+
+.property-card img {
+    max-width: 100%;
+    border-radius: 5px;
+}
+
+.property-card h3 {
+    font-family: "Lora", serif;
+    font-size: 24px;
+    margin: 10px 0;
+    color: #333;
+}
+
+.property-card p {
+    font-family: "Lora", serif;
+    font-size: 18px;
+    margin: 10px 0;
+    color: #555;
+}
+/**/
+
 #about-us-content .contributors-list {
     list-style: none;
     padding: 0;
