@@ -264,18 +264,22 @@ def execute_total_sales_by_date_query():
 
         # Retrieve the total sales per date sold
         cursor.execute("""
-            SELECT datesold, count(1) AS sales_count, sum(price) AS price_sum
+            SELECT datesold, count(1) as sales_count, sum(price) as price_sum
             FROM raw_sales
             GROUP BY datesold
-            ORDER BY sales_count desc;
+            ORDER BY sales_count DESC;
             """)
-        result = cursor.fetchone()
+        rows = cursor.fetchone()
+
+        # return [result[0]] if result else None
+        # Convert rows to a list of dictionaries
+        result = [{'datesold': row[0], 'sales_count': row[1], 'price_sum': row[2]} for row in rows]
 
         # Close the cursor and connection
         cursor.close()
         connection.close()
 
-        return [result[0]] if result else None
+        return result
 
     except Exception as e:
         print(f"Error executing total sales by date query: {str(e)}")
@@ -295,13 +299,17 @@ def execute_highest_avg_sales_postcode_query():
             GROUP BY postcode
             ORDER BY price_avg desc;
             """)
-        result = cursor.fetchone()
+        rows = cursor.fetchone()
+
+        # return [result[0]] if result else None
+        # Convert rows to a list of dictionaries
+        result = [{'postcode': row[0], 'price_avg': row[1], 'sales_count': row[2]} for row in rows]
 
         # Close the cursor and connection
         cursor.close()
         connection.close()
 
-        return [result[0]] if result else None
+        return result
 
     except Exception as e:
         print(f"Error executing highest average sales by postcode query: {str(e)}")
@@ -321,13 +329,17 @@ def execute_total_sales_by_year_query():
             GROUP BY year
             ORDER BY sales_count;
             """)
-        result = cursor.fetchone()
+        rows = cursor.fetchone()
+
+        # return [result[0]] if result else None
+        # Convert rows to a list of dictionaries
+        result = [{'year': row[0], 'sales_count': row[1], 'price_sum': row[2]} for row in rows]
 
         # Close the cursor and connection
         cursor.close()
         connection.close()
 
-        return [result[0]] if result else None
+        return result
 
     except Exception as e:
         print(f"Error executing total sales by year query: {str(e)}")
@@ -345,9 +357,9 @@ def execute_sales_ranking_by_postcode_query():
             SELECT * from
             (
                 SELECT year, postcode, price_sum, row_number() OVER (PARTITION BY year ORDER BY price_sum DESC) 
-                AS ranking
+                as ranking
                 FROM (
-                    SELECT year(datesold) as year ,postcode, sum(price) as price_sum 
+                    SELECT year(datesold) as year, postcode, sum(price) as price_sum 
                     FROM raw_sales
                     GROUP BY year, postcode
                 )  a
@@ -355,13 +367,17 @@ def execute_sales_ranking_by_postcode_query():
             WHERE ranking <=5 
             ORDER BY year, ranking;
             """)
-        result = cursor.fetchone()
+        rows = cursor.fetchone()
+
+        # return [result[0]] if result else None
+        # Convert rows to a list of dictionaries
+        result = [{'year': row[0], 'postcode': row[1], 'price_sum': row[2]} for row in rows]
 
         # Close the cursor and connection
         cursor.close()
         connection.close()
 
-        return [result[0]] if result else None
+        return result
 
     except Exception as e:
         print(f"Error executing sales ranking by postcode query: {str(e)}")
@@ -382,13 +398,17 @@ def execute_properties_sold_by_year_query():
             FROM raw_sales
             GROUP BY year;
             """)
-        result = cursor.fetchone()
+        rows = cursor.fetchone()
+
+        # return [result[0]] if result else None
+        # Convert rows to a list of dictionaries
+        result = [{'year': row[0], 'house_sales_count': row[1], 'unit_sales_count': row[2], 'price_sum': row[3]} for row in rows]
 
         # Close the cursor and connection
         cursor.close()
         connection.close()
 
-        return [result[0]] if result else None
+        return result
 
     except Exception as e:
         print(f"Error executing properties sold by year query: {str(e)}")
@@ -409,13 +429,17 @@ def execute_avg_price_by_property_type_over_years_query():
             FROM raw_sales
             GROUP BY year;
             """)
-        result = cursor.fetchone()
+        rows = cursor.fetchone()
+
+        # return [result[0]] if result else None
+        # Convert rows to a list of dictionaries
+        result = [{'year': row[0], 'house_price_avg': row[1], 'unit_price_avg': row[2], 'price_sum': row[3]} for row in rows]
 
         # Close the cursor and connection
         cursor.close()
         connection.close()
 
-        return [result[0]] if result else None
+        return result
 
     except Exception as e:
         print(f"Error executing average price by property type over years query: {str(e)}")
@@ -434,13 +458,17 @@ def execute_avg_price_property_type_bedroom_query():
             FROM raw_sales
             GROUP BY propertyType, bedrooms;
             """)
-        result = cursor.fetchone()
+        rows = cursor.fetchone()
+
+        # return [result[0]] if result else None
+        # Convert rows to a list of dictionaries
+        result = [{'propertyType': row[0], 'bedrooms': row[1], 'avg_price': row[2]} for row in rows]
 
         # Close the cursor and connection
         cursor.close()
         connection.close()
 
-        return [result[0]] if result else None
+        return result
 
     except Exception as e:
         print(f"Error executing average price property type by bedroom query: {str(e)}")
@@ -460,13 +488,17 @@ def execute_sold_property_by_type_bedroom_query():
             GROUP BY propertyType, bedrooms
             ORDER BY propertyType, bedrooms;
             """)
-        result = cursor.fetchone()
+        rows = cursor.fetchone()
+
+        # return [result[0]] if result else None
+        # Convert rows to a list of dictionaries
+        result = [{'propertyType': row[0], 'bedrooms': row[1], 'sales_count': row[2]} for row in rows]
 
         # Close the cursor and connection
         cursor.close()
         connection.close()
 
-        return [result[0]] if result else None
+        return result
 
     except Exception as e:
         print(f"Error executing sold property by property type & bedroom query: {str(e)}")
@@ -486,13 +518,17 @@ def execute_min_price_property_by_bedroom_query():
             GROUP BY propertyType, bedrooms
             ORDER BY propertyType, bedrooms;
             """)
-        result = cursor.fetchone()
+        rows = cursor.fetchone()
+
+        # return [result[0]] if result else None
+        # Convert rows to a list of dictionaries
+        result = [{'propertyType': row[0], 'bedrooms': row[1], 'min_price': row[2]} for row in rows]
 
         # Close the cursor and connection
         cursor.close()
         connection.close()
 
-        return [result[0]] if result else None
+        return result
 
     except Exception as e:
         print(f"Error executing minimum price property by bedroom query: {str(e)}")
@@ -512,13 +548,17 @@ def execute_sales_by_month_years_query():
             GROUP BY sale_month
             ORDER BY sale_month;
             """)
-        result = cursor.fetchone()
+        rows = cursor.fetchone()
+
+        # return [result[0]] if result else None
+        # Convert rows to a list of dictionaries
+        result = [{'sale_month': row[0], 'sales_count': row[1]} for row in rows]
 
         # Close the cursor and connection
         cursor.close()
         connection.close()
 
-        return [result[0]] if result else None
+        return result
 
     except Exception as e:
         print(f"Error executing sales by month years query: {str(e)}")
@@ -538,13 +578,17 @@ def execute_avg_price_bedroom_query():
             GROUP BY sale_year, bedrooms
             ORDER BY sale_year, bedrooms;
             """)
-        result = cursor.fetchone()
+        rows = cursor.fetchone()
+
+        # return [result[0]] if result else None
+        # Convert rows to a list of dictionaries
+        result = [{'sale_year': row[0], 'bedrooms': row[1], 'avg_price': row[2]} for row in rows]
 
         # Close the cursor and connection
         cursor.close()
         connection.close()
 
-        return [result[0]] if result else None
+        return result
 
     except Exception as e:
         print(f"Error executing average price by bedroom query: {str(e)}")
