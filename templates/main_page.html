@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Residential Property Sales Trending Platform</title>
+    <title>Residential Property Sales Analysis Platform</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -10,7 +10,7 @@
         <a href="{{ url_for('static', filename='logo.png') }}" id="logoLink">
             <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" id="logo">
         </a>
-        <h1>Property Sales Trends</h1>
+        <h1>Property Sales Analysis Platform</h1>
         <nav>
             <ul>
                 <li><a href="#search" onclick="scrollToSection('search')">Search</a></li>
@@ -30,6 +30,17 @@
                     <option value="query1">Oldest Property Sale</option>
                     <option value="query2">Newest Property Sale</option>
                     <option value="query3">Top 10 Sales by Date</option>
+                    <option value="query4">Total Sales by Date</option>
+                    <option value="query5">Highest Average Sales by Postcode</option>
+                    <option value="query6">Total sales by Year</option>
+                    <option value="query7">Sales Ranking by Postcode</option>
+                    <option value="query8">Properties Sold by Years</option>
+                    <option value="query9">Average Price by Property Type over Years</option>
+                    <option value="query10">Average Price by Property Type and Bedroom</option>
+                    <option value="query11">Sold Properties by Property Type and Bedroom</option>
+                    <option value="query12">Minimum Price of Property by Bedroom</option>
+                    <option value="query13">Sales by Month over Years</option>
+                    <option value="query14">Average Price by Bedrooms</option>
                     <!-- Add more options as needed -->
                 </select>
                 <input type="submit" value="Search">
@@ -39,6 +50,24 @@
             <section id="search-results">
                 <div id="resultContainer"></div>
             </section>
+
+            <section id="Statistics">
+                <h2 class="chart-title">Property Sales Statistics</h2>
+                <div id="chartContainer" class="chart-container">
+                    <img src="{{ url_for('static', filename='q1.png') }}" alt="Chart 1" class="chart" onclick="zoomChart(this)">
+                    <img src="{{ url_for('static', filename='q2.png') }}" alt="Chart 2" class="chart" onclick="zoomChart(this)">
+                    <img src="{{ url_for('static', filename='q3.png') }}" alt="Chart 3" class="chart" onclick="zoomChart(this)">
+                    <img src="{{ url_for('static', filename='q4.png') }}" alt="Chart 4" class="chart" onclick="zoomChart(this)">
+                    <img src="{{ url_for('static', filename='q5.png') }}" alt="Chart 5" class="chart" onclick="zoomChart(this)">
+                    <img src="{{ url_for('static', filename='q6.png') }}" alt="Chart 6" class="chart" onclick="zoomChart(this)">
+                    <img src="{{ url_for('static', filename='q7.png') }}" alt="Chart 7" class="chart" onclick="zoomChart(this)">
+                    <img src="{{ url_for('static', filename='q8.png') }}" alt="Chart 8" class="chart" onclick="zoomChart(this)">
+                    <img src="{{ url_for('static', filename='q9.png') }}" alt="Chart 9" class="chart" onclick="zoomChart(this)">
+                    <img src="{{ url_for('static', filename='q10.png') }}" alt="Chart 10" class="chart" onclick="zoomChart(this)">
+                    <img src="{{ url_for('static', filename='q11.png') }}" alt="Chart 11" class="chart" onclick="zoomChart(this)">
+                </div>
+            </section>                     
+            
     </main>
 
     <script>
@@ -48,7 +77,7 @@
             window.location.href = 'main_page';
         });
 
-    // Check if the user is logged in and their access type when the page loads
+        // Check if the user is logged in and their access type when the page loads
         var loggedInUser = localStorage.getItem('loggedInUser');
         var userAccessType = localStorage.getItem('userAccessType');
 
@@ -134,6 +163,23 @@
                 resultContainer.innerHTML = resultList;
             } else {
                 resultContainer.innerHTML = '<p>No results found</p>';
+            }
+        }
+
+        // New
+        function zoomChart(chart) {
+            if (!chart.classList.contains('zoomed')) {
+                // Open a new window for the zoomed chart
+                const newWindow = window.open('', 'Zoomed Chart');
+
+                // Set the content of the new window to the zoomed chart
+                newWindow.document.body.innerHTML = `<img src="${chart.src}" alt="Zoomed Chart" style="max-width: 100%; max-height: 100%; display: block; margin: auto;">`;
+
+                // Toggle the zoomed class for the clicked chart
+                chart.classList.add('zoomed');
+            } else {
+                // Toggle the zoomed class off when closing the new window
+                chart.classList.remove('zoomed');
             }
         }
 
